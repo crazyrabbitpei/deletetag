@@ -41,11 +41,11 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
         return -1;
     }
 
-    int start;
-    int finish,pfinish=0;
+    long int start;
+    long int finish,pfinish=0;
     int i;
     int nomatch;
-    char temp[100];
+    char temp[30];
     /* "P" is a pointer into the string which points to the end of the
        previous match. */
     const char *p = to_match;
@@ -58,8 +58,9 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
         nomatch = regexec (r, p, n_matches, m, 0);
         if (nomatch) {
             strncpy(temp,to_match + start,(finish - start));
-            
-            fprintf(output,"%s\n",p);
+            if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
+                fprintf(output,"%s\n",p);
+            }
             printf ("No more matches.\n");
             fclose(output);
             return nomatch;
@@ -80,8 +81,8 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
 
             }
             printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
-            strncpy(temp,to_match + start,(finish - start));
-            if(strcmp(temp,"<script>")!=0&&strcmp(temp,"</script>")!=0&&strcmp(temp,"<style>")!=0&&strcmp(temp,"</style>")!=0){
+            strncpy(temp,to_match + start,20);
+            if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
                 if(temp[0]=='\n'){
                     fprintf(output,"%.*s ",(start - pfinish),p);
                 }

@@ -1,7 +1,7 @@
 #include <regex.h>
 #define SIZE 5242880
 
-int DeleteTag(char *data,char *output);
+int DeleteTag(const char *data,char *output);
 void error(int err);
 void print(char *data);
 int compile_regex (regex_t *r, const char *regex_text);
