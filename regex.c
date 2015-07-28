@@ -43,7 +43,7 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
 
     long int start;
     long int finish,pfinish=0;
-    int i;
+    int i,detect=0;
     int nomatch;
     char temp[30];
     /* "P" is a pointer into the string which points to the end of the
@@ -57,10 +57,19 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
     while (1) {
         nomatch = regexec (r, p, n_matches, m, 0);
         if (nomatch) {
-            strncpy(temp,to_match + start,(finish - start));
-            if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
-                fprintf(output,"%s\n",p);
-            }
+            //if(start<=finish){
+            //    strncpy(temp,to_match + start,(finish - start));
+            //    if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
+            //        fprintf(output,"%s\n",p);
+            //    }
+            //}
+            //else{
+            //    if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
+                  if(detect==0){  
+                    fprintf(output,"%s\n",p);
+                  }
+            //    }
+            //}
             printf ("No more matches.\n");
             fclose(output);
             return nomatch;
@@ -82,13 +91,22 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
             }
             printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
             strncpy(temp,to_match + start,20);
-            if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
+
+            if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0){
                 if(temp[0]=='\n'){
                     fprintf(output,"%.*s ",(start - pfinish),p);
                 }
                 else{
                     fprintf(output,"%.*s",(start - pfinish),p);
                 }
+            }
+            else{
+                detect = 1;
+                printf("detect:%s\n",temp);
+            }
+            if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0){
+                printf("match close:%s\n",temp);
+                detect = 0;
             }
             pfinish = finish;
 

@@ -19,3 +19,28 @@ int DeleteTag(const char *data,char *ofile){
 
     //fwrite(data,sizeof(char),SIZE,output);
 }
+
+int DeleteNewline(char *data,int size){
+    char *p = data;
+    int i=0;
+    while(i<size){
+        printf("%d:[%c]->[%c]\n",i,*p,*(p+1));
+        if(*p=='\n'){
+            puts("newline");
+            *p = ' ';
+        }
+        else if(*p=='\\'){
+        //else if((*p=='\\'&&(*(p+1)=='n')||*(p+1)=='r')){
+            puts("sp newline");
+            //if(*p=='\\'){
+                *p = ' ';
+            //}
+            //p++;
+            //i++;
+            //*p = ' ';
+        }
+        p++;
+        i++;
+    }
+    return 0;
+}

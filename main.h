@@ -2,6 +2,7 @@
 #define SIZE 5242880
 
 int DeleteTag(const char *data,char *output);
+int DeleteNewline(char *data,int size);
 void error(int err);
 void print(char *data);
 int compile_regex (regex_t *r, const char *regex_text);
