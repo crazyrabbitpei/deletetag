@@ -1,4 +1,4 @@
-#include "main.h"
+#include "readData.h"
 #include<stdio.h>
 #include<string.h>
 #include<errno.h>
@@ -14,7 +14,8 @@ extern FILE *output;
    "r". */
 int compile_regex (regex_t *r, const char *regex_text)
 {
-    int status = regcomp (r, regex_text, REG_EXTENDED|REG_NEWLINE);
+    //int status = regcomp (r, regex_text, REG_EXTENDED|REG_NEWLINE);
+    int status = regcomp (r, regex_text, REG_EXTENDED);
     if (status != 0) {
         char error_message[MAX_ERROR_MSG];
         regerror (status, r, error_message, MAX_ERROR_MSG);
@@ -50,20 +51,9 @@ int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
     while (1) {
         nomatch = regexec (r, p, n_matches, m, 0);
         if (nomatch) {
-            //if(start<=finish){
-            //    strncpy(temp,to_match + start,(finish - start));
-            //    if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
-            //        fprintf(output,"%s\n",p);
-            //    }
-            //}
-            //else{
-            //    if(strstr(temp,"<script")==0&&strstr(temp,"</script>")==0&&strstr(temp,"<style")==0&&strstr(temp,"</style>")==0){
-                  if(detect==0){  
-                    fprintf(output,"%s\n",p);
-                  }
-            //    }
-            //}
-            //printf ("No more matches.\n");
+            if(detect==0){  
+                fprintf(output,"%s",p);
+            }
             fclose(output);
             return nomatch;
         }
