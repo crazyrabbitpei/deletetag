@@ -4,7 +4,7 @@
 #include<errno.h>
 #include <regex.h>
 
-
+extern FILE *output;
 /* The following is the size of a buffer to contain any error messages
    encountered when the regular expression is compiled. */
 
@@ -32,15 +32,8 @@ int compile_regex (regex_t *r, const char *regex_text)
    expression in "r".
  */
 
-int match_regex (regex_t *r, const char *to_match,char *ofile)
+int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
 {
-    FILE *output;
-    output = fopen(ofile,"w");
-    if(output==NULL){
-        error(errno);
-        return -1;
-    }
-
     long int start;
     long int finish,pfinish=0;
     int i,detect=0;
@@ -70,7 +63,7 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
                   }
             //    }
             //}
-            printf ("No more matches.\n");
+            //printf ("No more matches.\n");
             fclose(output);
             return nomatch;
         }
@@ -82,17 +75,17 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
             finish = m[i].rm_eo + (p - to_match);
 
             if (i == 0) {
-                printf ("$0 is ");
+                //printf ("$0 is ");
 
             }
             else {
-                printf ("$%d is ", i);
+                //printf ("$%d is ", i);
 
             }
-            printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
-            strncpy(temp,to_match + start,20);
+            //printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
+            strncpy(temp,to_match + start,10);
 
-            if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0){
+            if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0&&strstr(temp,"<head")==0){
                 if(temp[0]=='\n'){
                     fprintf(output,"%.*s ",(start - pfinish),p);
                 }
@@ -102,10 +95,8 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
             }
             else{
                 detect = 1;
-                printf("detect:%s\n",temp);
             }
-            if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0){
-                printf("match close:%s\n",temp);
+            if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0||strstr(temp,"</head>")!=0){
                 detect = 0;
             }
             pfinish = finish;
@@ -119,58 +110,3 @@ int match_regex (regex_t *r, const char *to_match,char *ofile)
 
 }
 
-int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
-{
-    FILE *output;
-    output = fopen(ofile,"w");
-    if(output==NULL){
-        error(errno);
-        return -1;
-    }
-
-    int start;
-    int finish,pfinish=0;
-    int i;
-    int nomatch;
-    /* "P" is a pointer into the string which points to the end of the
-       previous match. */
-    const char *p = to_match;
-    /* "N_matches" is the maximum number of matches allowed. */
-    const int n_matches = 100;
-    /* "M" contains the matches found. */
-    regmatch_t m[n_matches];
-
-    while (1) {
-        nomatch = regexec (r, p, n_matches, m, 0);
-        if (nomatch) {
-            fprintf(output,"%s\n",p);
-            printf ("No more matches.\n");
-            fclose(output);
-            return nomatch;
-        }
-        for (i = 0; i < n_matches; i++) {
-            if (m[i].rm_so == -1) {
-                break;
-            }
-            start = m[i].rm_so + (p - to_match);
-            finish = m[i].rm_eo + (p - to_match);
-
-            if (i == 0) {
-                printf ("$0 is ");
-
-            }
-            else {
-                printf ("$%d is ", i);
-
-            }
-            printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
-            fprintf(output,"%.*s",(start - pfinish),p);
-            pfinish = finish;
-        }
-
-        p += m[0].rm_eo;
-    }
-
-    return 0;
-
-}

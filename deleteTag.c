@@ -14,7 +14,7 @@ int DeleteTag(const char *data,char *ofile){
     
     compile_regex(&r, regex_text);
     //match_regex(&r, find_text,ofile);
-    match_regex(&r, data,ofile);
+    DeleteByRegex(&r, data,ofile);
     regfree (&r);
 
     //fwrite(data,sizeof(char),SIZE,output);
@@ -24,14 +24,14 @@ int DeleteNewline(char *data,int size){
     char *p = data;
     int i=0;
     while(i<size){
-        printf("%d:[%c]->[%c]\n",i,*p,*(p+1));
+        //printf("%d:[%c]->[%c]\n",i,*p,*(p+1));
         if(*p=='\n'){
-            puts("newline");
+            //puts("newline");
             *p = ' ';
         }
         else if(*p=='\\'){
         //else if((*p=='\\'&&(*(p+1)=='n')||*(p+1)=='r')){
-            puts("sp newline");
+            //puts("sp newline");
             //if(*p=='\\'){
                 *p = ' ';
             //}

@@ -16,55 +16,70 @@
 #include<string.h>
 #include "main.h"
 
+FILE *output;
+
 int ReadData(int command,char *ifile, char *ofile);
 
 int main(int argc, char *argv[]){
     //a.out -d/-r/-c(delete tag and store/store origin data/delete tag and convert to gais record) inputdata_file output
+
+
     int ch;
-    printf("argc:%d\nargv:%s\n",argc,argv[1]);
+    //printf("argc:%d\nargv:%s\n",argc,argv[1]);
     while((ch=getopt(argc,argv,"d:r:c:"))!=-1){
         switch(ch){
             case 'd':
-                puts("delete html tag");
-                printf("optarg:%s,%s\n",optarg,argv[argc-1]);
+                //puts("delete html tag");
+                //printf("optarg:%s,%s\n",optarg,argv[argc-1]);
                 ReadData(ch,optarg,argv[argc-1]);
                 break;
             case 'r':
-                puts("read origin data");
+                //puts("read origin data");
                 break;
             case 'c':
-                puts("convert to gais record");
+                //puts("convert to gais record");
                 break;
             default:
                 puts("command:a.out -d/-r/-c input_data output_file");
         }
     }
-
     return 0;
 }
 int ReadData(int comman, char *ifile,char *ofile){
+
     FILE *stream;
     char data[SIZE];
-    int size=0;
+    int totalsize=0,size=0,count=0;
     stream = fopen(ifile,"r");
     if(stream==NULL){
         error(errno);
         return -1;   
     }
-    //fseek(stream,SEEK_END,SEEK_SET);
-    //size = ftell(stream);
+    output = fopen(ofile,"w");
+    if(output==NULL){
+        error(errno);
+        return -1;
+    }
     size = fread(data,sizeof(char),SIZE,stream);
-    //print(data);
-    DeleteNewline(data,size);
-    DeleteTag(data,ofile);
+    //printf("now readsize:%d,max read size:%d\n",size,SIZE);
+    
+    //while(1){
+        DeleteNewline(data,size);
+        DeleteTag(data,ofile);
+        //if(size<SIZE){break;}
+        //fseek(stream,size,SEEK_SET);
+        //size = fread(data,sizeof(char),SIZE,stream);
+    //}
+    
     //fwrite(data,sizeof(char),SIZE,output);
     //fseek(stream,SIZE,SEEK_SET);
 
     fclose(stream);
+    fclose(output);
     return 0;
 }
 void print(char *data){
-    printf("read data:%s\n",data);
+    //printf("read data:%s\n",data);
 }
 void error(int err){
     printf("error message:%s\n",strerror(err));
