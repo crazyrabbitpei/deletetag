@@ -29,7 +29,6 @@ int main(int argc, char *argv[]){
                     strcpy(outfile,"outfile.rec");
                     strcpy(reg,"default");
                 }
-		printf("reg:%s\n",reg);
                 ReadData(ch,optarg,outfile,YES,reg,result);
                 //command input output deletenewline? delete_tag return_block
                 break;
