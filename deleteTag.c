@@ -11,8 +11,10 @@ int DeleteTag(const char *data,char *ofile,char *reg,char *result){
     char tag[TAGLEN];
     int status;
     //find_text = "<div><a href='http://fun.ltn.com.tw/?day=4' data-desc='自由FUN送台 週四愛料理\n' class='weeklink weektit'>自由FUN送台 週四愛料理\n</a></div>";
+    find_text = "1234";
     if(strcmp(reg,"")==0){
-        regex_text = "<[^>]*>";
+        //regex_text = "<[^>]*>";
+        regex_text = "123";
         status = NORMAL;
     }
     else{
@@ -22,7 +24,8 @@ int DeleteTag(const char *data,char *ofile,char *reg,char *result){
         status = CUS;
     }
     compile_regex(&r, regex_text);
-    DeleteByRegex(&r, data,ofile,status,result);
+    DeleteByRegex(&r, find_text,ofile,status,result);
+    //DeleteByRegex(&r, data,ofile,status,result);
     regfree (&r);
 }
 
