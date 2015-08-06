@@ -1,6 +1,7 @@
+mainfile = gais.c
 #for static lib
-static: gais.c libdeleteTag_st.a
-	gcc -static gais.c -L. -ldeleteTag_st -o static
+static: $(mainfile) libdeleteTag_st.a
+	gcc -static $(mainfile) -L. -ldeleteTag_st -o static
 libdeleteTag_st.a: deleteTag.o readData.o regex.o 
 	ar rcs libdeleteTag_st.a deleteTag.o readData.o regex.o
 deleteTag.o: deleteTag.c 
@@ -10,8 +11,8 @@ readData.o: readData.c
 regex.o: regex.c
 	gcc -c regex.c
 #for share lib
-share: gais.c libdeleteTag_sh.so
-	gcc gais.c -L. -ldeleteTag_sh -o share
+share: $(mainfile) libdeleteTag_sh.so
+	gcc $(mainfile) -L. -ldeleteTag_sh -o share
 libdeleteTag_sh.so: deleteTag_sh.o readData_sh.o regex_sh.o 
 	gcc -shared deleteTag_sh.o readData_sh.o regex_sh.o -o libdeleteTag_sh.so
 deleteTag_sh.o: deleteTag.c 
