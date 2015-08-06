@@ -33,13 +33,20 @@ int compile_regex (regex_t *r, const char *regex_text)
    expression in "r".
  */
 
-int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
+int DeleteByRegex (regex_t *r, const char *to_match,char *ofile,int status,char *result)
 {
     long int start;
     long int finish,pfinish=0;
     int i,detect=0;
     int nomatch;
     char temp[30];
+    FILE *output;
+    output  = fopen(ofile,"w");
+    if(output==NULL){
+        error(errno);
+        return 1;
+    }
+    //char result[SIZE]="";
     /* "P" is a pointer into the string which points to the end of the
        previous match. */
     const char *p = to_match;
@@ -53,6 +60,7 @@ int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
         if (nomatch) {
             if(detect==0){  
                 fprintf(output,"%s",p);
+                sprintf(result,"%s%s",result,p);
             }
             fclose(output);
             return nomatch;
@@ -74,23 +82,36 @@ int DeleteByRegex (regex_t *r, const char *to_match,char *ofile)
             }
             //printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
             strncpy(temp,to_match + start,10);
+            if(status==NORMAL){
+                if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0&&strstr(temp,"<head")==0){
+                    if(temp[0]=='\n'){
+                        fprintf(output,"%.*s ",(start - pfinish),p);
+                        sprintf(result,"%s%.*s ",result,(start - pfinish),p);
+                    }
+                    else{
+                        fprintf(output,"%.*s",(start - pfinish),p);
+                        sprintf(result,"%s%.*s",result,(start - pfinish),p);
+                    }
+                }
+                else{
+                    detect = 1;
+                }
+                if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0||strstr(temp,"</head>")!=0){
+                    detect = 0;
+                }
 
-            if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0&&strstr(temp,"<head")==0){
+            }
+            else if(status==CUS){
                 if(temp[0]=='\n'){
                     fprintf(output,"%.*s ",(start - pfinish),p);
+                    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
                 }
                 else{
                     fprintf(output,"%.*s",(start - pfinish),p);
+                    sprintf(result,"%s%.*s",result,(start - pfinish),p);
                 }
             }
-            else{
-                detect = 1;
-            }
-            if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0||strstr(temp,"</head>")!=0){
-                detect = 0;
-            }
             pfinish = finish;
-
         }
 
         p += m[0].rm_eo;
