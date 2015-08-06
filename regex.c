@@ -35,8 +35,8 @@ int compile_regex (regex_t *r, const char *regex_text)
 
 int DeleteByRegex (regex_t *r, const char *to_match,char *ofile,int status,char *result)
 {
-    long int start;
-    long int finish,pfinish=0;
+    int start;
+    int finish,pfinish=0;
     int i,detect=0;
     int nomatch;
     char temp[30];
