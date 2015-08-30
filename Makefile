@@ -24,4 +24,5 @@ regex_sh.o: regex.c
 clean:
 	rm -rf *.o
 clear:
-	rm -rf static share libdeleteTag_sh.so libdeleteTag_st.a
+	rm -rf static share libdeleteTag_sh.so libdeleteTag_st.a result
+	
