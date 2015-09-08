@@ -1,4 +1,5 @@
 #include "readData.h"
+#include "size.h"
 #include<stdio.h>
 #include<string.h>
 #include<errno.h>
@@ -48,7 +49,7 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
 		return 1;
 	}
 	*/
-	//char result[SIZE]="";
+	//char result[IMPORT_DATA_LEN]="";
 	/* "P" is a pointer into the string which points to the end of the
 	   previous match. */
 	const char *p = to_match;

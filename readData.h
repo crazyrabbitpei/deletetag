@@ -1,5 +1,4 @@
 #include<regex.h>
-#define SIZE 7340032//7M
 typedef enum{
     NO,
     YES

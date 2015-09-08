@@ -11,6 +11,7 @@
 
  */
 #include "readData.h"
+#include "size.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
@@ -28,15 +29,15 @@ int ReadData(int command, char *ifile,int rep,char *reg,char *result){
 		return -1;   
 	}
 	if(reg==NULL){
-		size = fread(result,sizeof(char),SIZE,stream);
+		size = fread(result,sizeof(char),IMPORT_DATA_LEN,stream);
 		if(rep==YES){
 			DeleteNewline(result,size);
 		}
 		return size;
 	}
 	else{
-		data = malloc(sizeof(char)*SIZE);
-		size = fread(data,sizeof(char),SIZE,stream);
+		data = malloc(sizeof(char)*IMPORT_DATA_LEN);
+		size = fread(data,sizeof(char),IMPORT_DATA_LEN,stream);
 	}
 	if(rep==YES){
 		DeleteNewline(data,size);

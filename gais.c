@@ -4,6 +4,7 @@
 #include<errno.h>
 #include<string.h>
 #include "readData.h"
+#include "size.h"
 #define FILELEN 50
 #define REGLEN 100
 int main(int argc, char *argv[]){
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]){
 	char reg[REGLEN];
 	char *result;
 	int check=0;
-	result =  malloc(sizeof(char)*SIZE);
+	result =  malloc(sizeof(char)*IMPORT_DATA_LEN);
 	while((ch=getopt(argc,argv,"f:s:t:"))!=-1){
 		check=1;
 		switch(ch){
