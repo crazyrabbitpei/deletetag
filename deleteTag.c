@@ -1,4 +1,5 @@
 #include "readData.h"
+#include "define.h"
 #include "size.h"
 #include<stdio.h>
 #include<string.h>

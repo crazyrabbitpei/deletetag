@@ -1,12 +1,5 @@
 #include<regex.h>
-typedef enum{
-    NO,
-    YES
-}flag;
-typedef enum{
-    NORMAL,
-    CUS
-}config_reg;
+
 int ReadData(int command, char *ifile,int rep,char *reg,char *result);
 //int ReadData(int command, char *ifile,int rep,char *reg);
 int DeleteTag(const char *data,char *reg,char *result);
