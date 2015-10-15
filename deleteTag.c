@@ -31,16 +31,27 @@ int DeleteTag(const char *data,char *reg,char *result){
 
 int DeleteNewline(char *data,int size){
 	char *p = data;
+	int line=0;
 	int i=0;
 	while(i<size){
 		//printf("%d:[%c]->[%c]\n",i,*p,*(p+1));
-		if(*p=='\n'){
+		//if(*p=='\n'||*p=='\r'){
+		if(*p>=1&&*p<=31){
 			//puts("newline");
-			*p = ' ';
+			if(line!=1){
+				*p = ' ';
+			}
+			line=1;
 		}
 		else if(*p=='\\'&&(*(p+1)=='r'||*(p+1)=='n')){
 			//puts("sp newline");
-			*p = ' ';
+			if(line!=1){
+				*p = ' ';
+			}
+			line=1;
+		}
+		else{
+			line=0;
 		}
 		p++;
 		i++;
