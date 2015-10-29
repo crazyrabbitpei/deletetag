@@ -2,6 +2,7 @@
 #include "define.h"
 #include "size.h"
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<errno.h>
 #include <regex.h>
@@ -27,10 +28,12 @@ int DeleteTag(const char *data,char *reg,char *result){
 	compile_regex(&r, regex_text);
 	DeleteByRegex(&r, data,status,result);
 	regfree (&r);
+
 }
 
-int DeleteNewline(char *data,int size){
+int DeleteNewline(char *data,char *output,int size){
 	char *p = data;
+	int word=0;
 	int line=0;
 	int i=0;
 	while(i<size){
@@ -40,21 +43,32 @@ int DeleteNewline(char *data,int size){
 			//puts("newline");
 			if(line!=1){
 				*p = ' ';
+				output[word++]= *p;
+				line = 1;
 			}
-			line=1;
+			else{
+				//*p = 'a';
+			}
 		}
 		else if(*p=='\\'&&(*(p+1)=='r'||*(p+1)=='n')){
 			//puts("sp newline");
 			if(line!=1){
 				*p = ' ';
+				output[word++]= *p;
+				line = 1;
 			}
-			line=1;
+			else{
+				//*p = 'a';
+			}
 		}
 		else{
+			output[word++]= *p;
 			line=0;
 		}
+
 		p++;
 		i++;
 	}
+	//printf("----\n%s\n----\n",output);
 	return 0;
 }

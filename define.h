@@ -5,7 +5,8 @@ typedef enum{
 }flag;
 typedef enum{
     NORMAL,
-    CUS
+    CUS,
+    STAY
 }config_reg;
 typedef enum{
     READFILE,

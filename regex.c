@@ -87,7 +87,7 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
 			//printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
 			strncpy(temp,to_match + start,10);
 			if(status==NORMAL){
-				if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0&&strstr(temp,"<head")==0){
+				if(detect==0&&strstr(temp,"<script")==0&&strstr(temp,"<style")==0&&strstr(temp,"<head")==0&&strstr(temp,"<!--")==0){
 					if(temp[0]=='\n'){
 						//fprintf(output,"%.*s ",(start - pfinish),p);
 						sprintf(result,"%s%.*s ",result,(start - pfinish),p);
@@ -100,7 +100,7 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
 				else{
 					detect = 1;
 				}
-				if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0||strstr(temp,"</head>")!=0){
+				if(strstr(temp,"</script>")!=0||strstr(temp,"</style>")!=0||strstr(temp,"</head>")!=0||strstr(temp,"-->")!=0){
 					detect = 0;
 				}
 
@@ -115,7 +115,12 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
 					sprintf(result,"%s%.*s",result,(start - pfinish),p);
 				}
 			}
-			pfinish = finish;
+            
+            else if(status==STAY){
+					//sprintf(result,"\n=>%s%.*s\n",result,(start - pfinish),p);
+            }
+			
+            pfinish = finish;
 		}
 
 		p += m[0].rm_eo;

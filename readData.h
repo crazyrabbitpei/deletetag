@@ -3,7 +3,7 @@
 int ReadData(int command, char *ifile,int rep,char *reg,char *result);
 //int ReadData(int command, char *ifile,int rep,char *reg);
 int DeleteTag(const char *data,char *reg,char *result);
-int DeleteNewline(char *data,int size);
+int DeleteNewline(char *data,char *output, int size);
 void error(int err);
 void print(char *data);
 

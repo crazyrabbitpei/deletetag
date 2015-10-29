@@ -1,5 +1,5 @@
 //read data
-#define IMPORT_DATA_LEN 7340032//7M
+#define IMPORT_DATA_LEN 734003200//700M
 //toType
 #define AUTHOR_LEN 20
 #define LAN_LEN 20

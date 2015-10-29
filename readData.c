@@ -22,7 +22,8 @@
 int ReadData(int command, char *idata,int rep,char *reg,char *result){
 
 	FILE *stream;
-	char *data;
+	char *data,*output;
+
 	int totalsize=0,size=0,count=0;
 	switch(command){
 		case 0://Read from file
@@ -32,40 +33,68 @@ int ReadData(int command, char *idata,int rep,char *reg,char *result){
 				return -1;   
 			}
 			if(reg==NULL){
-				size = fread(result,sizeof(char),IMPORT_DATA_LEN,stream);
+				output = malloc(sizeof(char)*IMPORT_DATA_LEN);
+				size = fread(output,sizeof(char),IMPORT_DATA_LEN,stream);
 				if(rep==YES){
-					DeleteNewline(result,size);
+					DeleteNewline(output,result,size);
+					//strcpy(result,output);
 				}
+				else{
+					strcpy(result,output);
+				}
+				free(output);
+				
+				size = (int)strlen(result);
 				return size;
 			}
-			else{
+			else{//want to delete html tag
 				data = malloc(sizeof(char)*IMPORT_DATA_LEN);
 				size = fread(data,sizeof(char),IMPORT_DATA_LEN,stream);
 			}
 			if(rep==YES){
-				DeleteNewline(data,size);
+				output = malloc(sizeof(char)*IMPORT_DATA_LEN);
+				DeleteNewline(data,output,size);
+				DeleteTag(output,reg,result);
+				free(output);
 			}
-
-			DeleteTag(data,reg,result);
+			else{
+				DeleteTag(data,reg,result);
+			}
 
 			free(data);
 			fclose(stream);
 			break;
 		case 1://Read from string
 			size = (int)strlen(idata);
-			if(rep==YES){
-				DeleteNewline(idata,size);
-			}
+			if(reg==NULL){
+				if(rep==YES){
+					DeleteNewline(idata,result,size);
+					size = (int)strlen(result);
+				}
+				else{
+					strcpy(result,idata);
+					size = (int)strlen(idata);
+				}
+				return size;
 
-			if(reg!=NULL){
-				DeleteTag(idata,reg,result);
 			}
 			else{
-				strcpy(result,idata);
+				if(rep==YES){
+					output = malloc(sizeof(char)*IMPORT_DATA_LEN);
+					DeleteNewline(idata,output,size);
+					DeleteTag(output,reg,result);
+					
+					free(output);
+				}
+				else{
+					DeleteTag(idata,reg,result);
+				}
+				
 			}
+			
 			break;
 	}
-
+	size = (int)strlen(result);
 	return size;
 }
 void print(char *data){
