@@ -19,7 +19,7 @@
 #include<errno.h>
 #include<string.h>
 
-int ReadData(int command, char *idata,int rep,char *reg,char *result){
+int ReadData(int command, char *idata,int rep,char *reg,char *result,size_t data_size){
 
 	FILE *stream;
 	char *data,*output;
@@ -33,8 +33,8 @@ int ReadData(int command, char *idata,int rep,char *reg,char *result){
 				return -1;   
 			}
 			if(reg==NULL){
-				output = malloc(sizeof(char)*IMPORT_DATA_LEN);
-				size = fread(output,sizeof(char),IMPORT_DATA_LEN,stream);
+				output = malloc(sizeof(char)*data_size);
+				size = fread(output,sizeof(char),data_size,stream);
 				if(rep==YES){
 					DeleteNewline(output,result,size);
 					//strcpy(result,output);
@@ -48,11 +48,11 @@ int ReadData(int command, char *idata,int rep,char *reg,char *result){
 				return size;
 			}
 			else{//want to delete html tag
-				data = malloc(sizeof(char)*IMPORT_DATA_LEN);
-				size = fread(data,sizeof(char),IMPORT_DATA_LEN,stream);
+				data = malloc(sizeof(char)*data_size);
+				size = fread(data,sizeof(char),data_size,stream);
 			}
 			if(rep==YES){
-				output = malloc(sizeof(char)*IMPORT_DATA_LEN);
+				output = malloc(sizeof(char)*data_size);
 				DeleteNewline(data,output,size);
 				DeleteTag(output,reg,result);
 				free(output);
@@ -80,7 +80,7 @@ int ReadData(int command, char *idata,int rep,char *reg,char *result){
 			}
 			else{
 				if(rep==YES){
-					output = malloc(sizeof(char)*IMPORT_DATA_LEN);
+					output = malloc(sizeof(char)*data_size);
 					DeleteNewline(idata,output,size);
 					DeleteTag(output,reg,result);
 					
