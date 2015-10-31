@@ -13,7 +13,7 @@ int DeleteTag(const char *data,char *reg,char *result){
 	const char *find_text;
 	char tag[TAGLEN];
 	int status;
-	//find_text = "<div><a href='http://fun.ltn.com.tw/?day=4' data-desc='自由FUN送台 週四愛料理\n' class='weeklink weektit'>自由FUN送台 週四愛料理\n</a></div>";
+    int match=0;
 	if(strcmp(reg,"default")==0||strcmp(reg,"")==0){
 		regex_text = "<(\\-)*[^>]*>";
 		//regex_text = "<[^>][\\-]*>";
@@ -27,12 +27,12 @@ int DeleteTag(const char *data,char *reg,char *result){
 	}
 
 	compile_regex(&r, regex_text);
-    int match=0;
+
 	//match = GetByRegex(&r, data,status,result);
 	match = DeleteByRegex(&r, data,status,result);
 	regfree (&r);
 
-    printf("match:%d\n",match);
+    //printf("match:%d\n",match);
 
 }
 
