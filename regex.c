@@ -70,6 +70,7 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
             return cnt;
         }
         for (i = 0; i < n_matches; i++) {
+            memset(temp,0,GRABLEN);
             if (m[i].rm_so == -1) {
                 break;
             }
@@ -86,18 +87,18 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
             }
             //printf("'%.*s' (bytes %d:%d)\n", (finish - start),to_match + start, start, finish);
             strncpy(temp,to_match + start,finish-start);
-            getLink(temp,finish,start,result);
+
             //printf("get:[%.*s]\n",(start - pfinish),p);
             if(strlen(temp)==0){continue;}
 
             if(status==NORMAL){
                 if(detect==0&&strstr(temp,"script")==0&&strstr(temp,"style")==0&&strstr(temp,"head")==0){
-                    if(temp[0]=='\n'){
-                        sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                    }
-                    else{
+                    //if(temp[0]=='\n'){
+                    //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
+                    //}
+                    //else{
                         sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                    }
+                    //}
 
                 }
                 else if((t=strstr(temp,"script"))!=0||(t=strstr(temp,"style"))!=0||(t=strstr(temp,"head"))!=0){
@@ -128,25 +129,26 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
                     if(*t=='<'){
                         //puts("--ignore start");
                         if(bdetect==0){
-                            if(temp[0]=='\n'){
-                                sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                            }
-                            else{
+                            //if(temp[0]=='\n'){
+                            //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
+                            //}
+                            //else{
                                 sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                            }
+                            //}
                         }
                         detect=1;
                     }
                 }
             }
             else if(status==CUS){
-                if(temp[0]=='\n'){
-                    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                }
-                else{
+                //if(temp[0]=='\n'){
+                //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
+                //}
+                //else{
                     sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                }
+                //}
             }
+            getLink(temp,finish,start,result);
             pfinish = finish;
         }
 
