@@ -5,8 +5,8 @@
 #include<string.h>
 #include<errno.h>
 #include <regex.h>
-#define GRABLEN 350
-#define HREFLEN 350
+#define GRABLEN 1000
+#define HREFLEN 1000
 
 /* The following is the size of a buffer to contain any error messages
    encountered when the regular expression is compiled. */
@@ -37,11 +37,11 @@ int compile_regex (regex_t *r, const char *regex_text)
    expression in "r".
    */
 
-int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
+char *DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
 {
     int start;
     int finish,pfinish=0;
-    int i,j;
+    int i,j,k;
     int nomatch;
     char temp[GRABLEN];
 
@@ -49,25 +49,30 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
        previous match. */
     const char *p = to_match;
     /* "N_matches" is the maximum number of matches allowed. */
-    const int n_matches = 100;
+    const int n_matches = 1000;
     /* "M" contains the matches found. */
     regmatch_t m[n_matches];
-
-    strcpy(result,"");
+    FILE *fp;
+    //fp = fopen("outfile.rec","a");
+    //strcpy(result,"");
     char *t,*tp;
-    int cnt=0;
+    int cnt=0,wcnt=0;
     int detect,bdetect;
     detect = bdetect=0;
     while (1) {
         nomatch = regexec (r, p, n_matches, m, 0);
         if (nomatch) {
             if(cnt==0){
-                sprintf(result,"%s",p);
+                //sprintf(result,"%s%s",result,p);
+                //strcat(result,p);
+                //fprintf(fp,"%s",p);
             }
             else{
-                sprintf(result,"%s%s",result,p);
+                //sprintf(result,"%s%s",result,p);
+                //strcat(result,p);
+                //fprintf(fp ,"%s",p);
             }
-            return cnt;
+            return result;
         }
         for (i = 0; i < n_matches; i++) {
             memset(temp,0,GRABLEN);
@@ -89,22 +94,19 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
             strncpy(temp,to_match + start,finish-start);
 
             //printf("get:[%.*s]\n",(start - pfinish),p);
-            if(strlen(temp)==0){continue;}
+            //printf("get:[%s]\n",p);
+            if((finish-start)==0){continue;}
+            //if(strlen(temp)==0){continue;}
 
             if(status==NORMAL){
                 if(detect==0&&strstr(temp,"script")==0&&strstr(temp,"style")==0&&strstr(temp,"head")==0){
-                    //if(temp[0]=='\n'){
-                    //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                    //}
-                    //else{
-                        sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                    //}
-
+                        //use pointer to record result 
+                        strncat(result,p,(start - pfinish));
+                        result+=(start-pfinish);
                 }
                 else if((t=strstr(temp,"script"))!=0||(t=strstr(temp,"style"))!=0||(t=strstr(temp,"head"))!=0){
                     if(*t=='h'){
                         bdetect=1;
-                        //puts("-- in HEAD");
                     }
                     tp = t;
                     t--;
@@ -129,41 +131,35 @@ int DeleteByRegex (regex_t *r, const char *to_match,int status,char *result)
                     if(*t=='<'){
                         //puts("--ignore start");
                         if(bdetect==0){
-                            //if(temp[0]=='\n'){
-                            //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                            //}
-                            //else{
-                                sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                            //}
+                            strncat(result,p,(start - pfinish));
+                            result+=(start-pfinish);
                         }
                         detect=1;
                     }
                 }
             }
             else if(status==CUS){
-                //if(temp[0]=='\n'){
-                //    sprintf(result,"%s%.*s ",result,(start - pfinish),p);
-                //}
-                //else{
-                    sprintf(result,"%s%.*s",result,(start - pfinish),p);
-                //}
+                strncat(result,p,(start - pfinish));
+                result+=(start-pfinish);
             }
-            getLink(temp,finish,start,result);
+            //result += getLink(temp,finish,start,result);
+            //getLink(temp,finish,start,result);
             pfinish = finish;
         }
 
         p += m[0].rm_eo;
         cnt++;
     }
-
-    return cnt;
+    //fclose(fp);
+    return result;
 
 }
 
+//int getLink(char *temp,int finish, int start, char *result,FILE *fp)
 int getLink(char *temp,int finish, int start, char *result)
 {
     char *hp,*thp;
-    char href[HREFLEN];
+    char href[HREFLEN],hreftemp[HREFLEN+10];
     int position,position_end,link_len,link_detect,nottag;
     position = position_end = link_len = link_detect = nottag = 0;
     if((hp=strstr(temp,"img"))!=0||(hp=strstr(temp,"iframe"))!=0||(hp=strstr(temp,"a"))!=0){
@@ -176,7 +172,7 @@ int getLink(char *temp,int finish, int start, char *result)
             }
             thp--;
         }
-        if(nottag==1){return;}
+        if(nottag==1){return 0;}
 
         while(*hp!='>'){
             if(*hp=='s'&&*(hp+1)=='r'&&*(hp+2)=='c'){
@@ -242,11 +238,14 @@ int getLink(char *temp,int finish, int start, char *result)
             strncpy(href,hp,(finish-start-position-position_end-2));
             href[link_len]='\0';
             if(link_detect==1){
-                sprintf(result,"%s(src_link:%s)",result,href);
+                sprintf(hreftemp,"(src_link:%s)",href);
+                strcat(result,hreftemp);
             }
             else if(link_detect==2){
-                sprintf(result,"%s(href_link:%s)",result,href);
+                sprintf(hreftemp,"(href_link:%s)",href);
+                strcat(result,hreftemp);
             }
         }
     }
+    return strlen(hreftemp);
 }

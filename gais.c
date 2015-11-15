@@ -38,19 +38,22 @@ int main(int argc, char *argv[]){
                     strcpy(filter,"default");
                 }
                 /*read from file*/
-                //size = ReadData(READFILE,optarg,YES,filter,result,strlen(idata);
+                //size = ReadData(READFILE,optarg,YES,filter,result,strlen(idata),"<body>","</body>");
                 /*read from string*/
                 stream = fopen(optarg,"r");
-                fread(idata,sizeof(char),IMPORT_DATA_LEN,stream);
+                size = fread(idata,sizeof(char),IMPORT_DATA_LEN,stream);
                 //strcpy(idata,"<html><!-- commnent1 -->\n<head>\n<script><!-- comment2 -->\nfunction1\n</script>\n<style> style 1 </style><!-- comment3 -->\n</head>\n<body>\n<div>\ndiv1\n<script>\n function2 \n</script>\ndiv2\n<!-- comment 4 -->div3< img src='www.qq.com ' >link 1 end</div>< a href = 'href.com.tw' >\n<!--commemt5-->\n</body>\n<script>\nfunction3\n</script>\n<div>\ndiv 4< img  id='2' src = 'img.com.tw ' class = 'src_test' >\n</div><a class='href_2' href = \" a_link.com.tw \" id='2'>\n<iframe src=\"demo_iframe.htm\" width='200' height='200'></iframe></html>");
-                size = ReadData(READDATA,idata,YES,filter,result,strlen(idata));
-                /*Usage:ReadData(READFILE/READDATA,file/string,YES/NO,filter,result)
-                  element 3 means delete newline(YES or NO)
-filter:0(NULL)->do not delete tag
-"default" or "" -> delete all tag
-"html","div"...->delete certain tag
-*/
-                printf("%s\n",result);
+                //size = ReadData(READDATA,idata,YES,filter,result,size,"<body>","</body>");
+                size = ReadData(READDATA,idata,YES,filter,result,size,"@body:","@");
+                //size = ReadData(READDATA,idata,YES,filter,result,size,"@body","@\n");
+                /*Usage:ReadData(READFILE/READDATA,file/string,YES/NO,filter,result,input data size)
+                    - element 3 means delete newline(YES or NO)
+                    - filter:
+                        0(NULL)->do not delete tag
+                        "default" or "" -> delete all tag
+                        "html","div"...->delete certain tag
+                */
+                //printf("%s\n",result);
                 break;
             case 't':
                 for(i=10;i<=12;i++){
@@ -64,7 +67,7 @@ filter:0(NULL)->do not delete tag
                         fread(idata,sizeof(char),IMPORT_DATA_LEN,stream);
                         //printf("filename:%s size:%d\n",filename,(int)strlen(idata));
                         result = malloc(sizeof(char)*strlen(idata));
-                        size = ReadData(READDATA,idata,YES,filter,result,strlen(idata));
+                        size = ReadData(READDATA,idata,YES,filter,result,strlen(idata),"<body>","</body>");
                         printf("[%d]size:%d\n(%s)\n",i,size,result);
 
                     }

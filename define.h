@@ -12,3 +12,10 @@ typedef enum{
     READFILE,
     READDATA,
 }read_from;
+
+//transfer
+typedef enum{
+    CHT,
+    CHS,
+    ORI
+}transfer_lan;

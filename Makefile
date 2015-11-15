@@ -1,5 +1,8 @@
 mainfile = gais.c
 #for static lib
+debug: $(mainfile) libdeleteTag_st.a
+	gcc -pg -static $(mainfile) -L. -ldeleteTag_st -o debug
+	rm -rf *.o
 static: $(mainfile) libdeleteTag_st.a
 	gcc -static $(mainfile) -L. -ldeleteTag_st -o static
 	rm -rf *.o
